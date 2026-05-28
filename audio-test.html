@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audio Test</title>
+<style>
+  body { background:#0f0404; color:#fff; font-family:monospace; padding:30px; display:flex; flex-direction:column; gap:16px; align-items:center; }
+  h2 { color:rgba(255,82,82,0.7); letter-spacing:.2em; font-size:13px; }
+  button { width:300px; padding:18px; background:rgba(255,82,82,0.1); border:1px solid rgba(255,82,82,0.4); border-radius:8px; color:#fff; font-family:monospace; font-size:14px; cursor:pointer; }
+  button:active { background:rgba(255,82,82,0.3); }
+  #log { width:300px; font-size:11px; color:rgba(255,255,255,0.4); line-height:1.8; }
+</style>
+</head>
+<body>
+<h2>iOS AUDIO TEST</h2>
+
+<button onclick="test1()">① Play tick.mp3 directly (tap)</button>
+<button onclick="test2()">② Play tick.mp3 via AudioBuffer (tap)</button>
+<button onclick="test3()">③ Start 3-sec timer → play tick.mp3 directly</button>
+<button onclick="test4()">④ Start 3-sec timer → play via AudioBuffer</button>
+<button onclick="test5()">⑤ Unlock ctx + 3-sec timer → AudioBuffer</button>
+
+<div id="log">Tap a button to test...</div>
+
+<audio id="ta" src="tick.mp3" preload="auto"></audio>
+
+<script>
+var log = document.getElementById('log');
+function out(msg) { log.innerHTML += msg + '<br>'; }
+
+var ctx = null;
+var tickBuf = null;
+
+// ① Direct play on tap
+function test1() {
+  out('① tapping play on audio element...');
+  var a = document.getElementById('ta');
+  a.currentTime = 0;
+  a.play().then(function(){ out('① ✓ played'); }).catch(function(e){ out('① ✗ ' + e); });
+}
+
+// ② AudioBuffer play on tap
+function test2() {
+  out('② loading + playing via AudioBuffer on tap...');
+  var c = new (window.AudioContext || window.webkitAudioContext)();
+  fetch('tick.mp3')
+    .then(function(r){ return r.arrayBuffer(); })
+    .then(function(ab){ return c.decodeAudioData(ab); })
+    .then(function(buf){
+      var src = c.createBufferSource();
+      src.buffer = buf;
+      src.connect(c.destination);
+      src.start(0);
+      out('② ✓ played via AudioBuffer');
+    }).catch(function(e){ out('② ✗ ' + e); });
+}
+
+// ③ Timer → direct audio element play
+function test3() {
+  out('③ starting 3s timer → direct play...');
+  var a = document.getElementById('ta');
+  setTimeout(function(){
+    out('③ timer fired, calling play()...');
+    a.currentTime = 0;
+    a.play().then(function(){ out('③ ✓ played'); }).catch(function(e){ out('③ ✗ ' + e); });
+  }, 3000);
+}
+
+// ④ Timer → AudioBuffer (no pre-unlock)
+function test4() {
+  out('④ loading buffer, starting 3s timer...');
+  var c = new (window.AudioContext || window.webkitAudioContext)();
+  fetch('tick.mp3')
+    .then(function(r){ return r.arrayBuffer(); })
+    .then(function(ab){ return c.decodeAudioData(ab); })
+    .then(function(buf){
+      out('④ buffer ready, waiting for timer...');
+      setTimeout(function(){
+        out('④ timer fired, playing buffer...');
+        try {
+          var src = c.createBufferSource();
+          src.buffer = buf;
+          src.connect(c.destination);
+          src.start(0);
+          out('④ ✓ started');
+        } catch(e){ out('④ ✗ ' + e); }
+      }, 3000);
+    }).catch(function(e){ out('④ ✗ fetch/decode: ' + e); });
+}
+
+// ⑤ Unlock ctx on tap, then timer fires AudioBuffer
+function test5() {
+  out('⑤ unlocking ctx on tap, 3s timer...');
+  if (!ctx) {
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+    out('⑤ ctx created, state: ' + ctx.state);
+  }
+  if (!tickBuf) {
+    fetch('tick.mp3')
+      .then(function(r){ return r.arrayBuffer(); })
+      .then(function(ab){ return ctx.decodeAudioData(ab); })
+      .then(function(buf){ tickBuf = buf; out('⑤ buffer loaded'); })
+      .catch(function(e){ out('⑤ load error: ' + e); });
+  }
+  // Keep ctx alive with silent node
+  var osc = ctx.createOscillator();
+  var g = ctx.createGain(); g.gain.value = 0;
+  osc.connect(g); g.connect(ctx.destination);
+  osc.start(); osc.stop(ctx.currentTime + 10);
+
+  setTimeout(function(){
+    out('⑤ timer fired, ctx state: ' + ctx.state);
+    if (!tickBuf) { out('⑤ buffer not ready'); return; }
+    try {
+      if (ctx.state === 'suspended') ctx.resume();
+      var src = ctx.createBufferSource();
+      src.buffer = tickBuf;
+      src.connect(ctx.destination);
+      src.start(0);
+      out('⑤ ✓ played');
+    } catch(e){ out('⑤ ✗ ' + e); }
+  }, 3000);
+}
+</script>
+</body>
+</html>
