@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home | Mamellnet</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Open+Sans:400,600,700">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: #222;
+      color: #fff;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 40px;
+      height: 70px;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 0;
+    }
+
+    nav ul li a {
+      display: block;
+      padding: 10px 20px;
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-family: 'Roboto', sans-serif;
+      transition: color 0.15s;
+    }
+
+    nav ul li a:hover { color: #478ac9; }
+
+    .header-inner {
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .linkedin-icon {
+      display: flex;
+      align-items: center;
+    }
+
+    .linkedin-icon a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #478ac9;
+      transition: opacity 0.15s;
+    }
+
+    .linkedin-icon a:hover { opacity: 0.8; }
+
+    .linkedin-icon svg { width: 18px; height: 18px; }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      width: 100%;
+      min-height: 770px;
+      background-image: linear-gradient(0deg, rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url("images/ggg-min.jpg");
+      background-size: cover;
+      background-position: 50% 50%;
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .hero-inner {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    .hero img {
+      width: 408px;
+      height: 150px;
+      display: block;
+      margin-top: 340px;
+      margin-left: auto;
+      margin-right: auto;
+      object-fit: contain;
+    }
+
+    @media (max-width: 1199px) {
+      .hero { min-height: 635px; }
+      .hero img { width: 295px; height: 109px; margin-top: 280px; }
+    }
+    @media (max-width: 991px) {
+      .hero { min-height: 486px; }
+      .hero img { width: 261px; height: 96px; margin-top: 210px; }
+    }
+    @media (max-width: 767px) {
+      .hero { min-height: 365px; }
+      .hero img { width: 234px; height: 86px; margin-top: 160px; }
+    }
+    @media (max-width: 575px) {
+      .hero { min-height: 285px; }
+      .hero img { width: 179px; height: 66px; margin-top: 120px; }
+    }
+
+    /* ── LINKS GRID ── */
+    .links-section {
+      background: #0f1117;
+      padding: 60px 20px;
+    }
+
+    .links-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 1rem;
+    }
+
+    @media (max-width: 767px) {
+      .links-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 400px) {
+      .links-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .link-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: #1e2330;
+      border: 1px solid #2d3448;
+      border-radius: 12px;
+      padding: 1.4rem 1rem;
+      text-decoration: none;
+      color: #cbd5e1;
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+    }
+
+    .link-card:hover {
+      background: #252c3d;
+      border-color: #4f6ef7;
+      transform: translateY(-2px);
+    }
+
+    .link-card .icon { font-size: 1.8rem; }
+
+    .link-card .label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #333;
+      text-align: center;
+      padding: 20px;
+      color: #aaa;
+      font-size: 0.8rem;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    /* ── MOBILE NAV ── */
+    .hamburger { display: none; cursor: pointer; padding: 10px; }
+    .hamburger span {
+      display: block; width: 22px; height: 2px;
+      background: #fff; margin: 4px 0;
+      transition: all 0.2s;
+    }
+
+    @media (max-width: 767px) {
+      header { padding: 0 20px; }
+      .hamburger { display: block; }
+      nav {
+        display: none;
+        position: absolute;
+        top: 70px; left: 0; right: 0;
+        background: rgba(0,0,0,0.95);
+        padding: 10px 0;
+      }
+      nav.open { display: block; }
+      nav ul { flex-direction: column; }
+      nav ul li a { text-align: center; padding: 14px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="hamburger" onclick="document.querySelector('nav').classList.toggle('open')">
+        <span></span><span></span><span></span>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="About.html">About</a></li>
+          <li><a href="Contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="linkedin-icon">
+        <a href="https://www.linkedin.com/in/brian-mamelli-pmp-0005a46/" target="_blank" title="LinkedIn">
+          <svg viewBox="0 0 24 24" fill="#fff" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <img src="color_logo_transparent.png" alt="Mamellnet">
+    </div>
+  </section>
+
+  <section class="links-section">
+    <div class="links-grid">
+      <a class="link-card" href="https://encrypt.mamelli.net">
+        <span class="icon">🔐</span>
+        <span class="label">encrypt</span>
+      </a>
+      <a class="link-card" href="https://gateway.mamelli.net">
+        <span class="icon">🚪</span>
+        <span class="label">gateway</span>
+      </a>
+      <a class="link-card" href="https://network.mamelli.net">
+        <span class="icon">🌐</span>
+        <span class="label">network</span>
+      </a>
+      <a class="link-card" href="https://spygame.mamelli.net">
+        <img src="images/apple-touch-icon_1.png" alt="spygame" style="width:48px;height:48px;border-radius:8px;object-fit:cover;">
+        <span class="label">spygame</span>
+      </a>
+      <a class="link-card" href="https://storage.mamelli.net">
+        <span class="icon">🗄️</span>
+        <span class="label">storage</span>
+      </a>
+      <a class="link-card" href="https://stream.mamelli.net">
+        <span class="icon">📡</span>
+        <span class="label">stream</span>
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <p>Private webpage of Brian Mamelli.</p>
+  </footer>
+
+</body>
+</html>
